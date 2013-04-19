@@ -2,6 +2,28 @@
 
 
 
+int ReadTransform( itk::TransformFileReader::Pointer transformFile , itk::AffineTransform< double , 3 >::Pointer &affineTransform )
+{
+  typedef itk::AffineTransform< double , 3 > AffineTransformType ;
+  typedef itk::Rigid3DTransform< double > Rigid3DTransformType ;
+  //Load the transforms
+  Rigid3DTransformType::Pointer rigidTransform ;
+  affineTransform
+            = dynamic_cast< AffineTransformType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
+  if( !affineTransform )
+  {
+    rigidTransform = dynamic_cast< Rigid3DTransformType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
+    if( !rigidTransform )
+    {
+       std::cerr << "Transforms must be of type AffineTransform_double_3_3 or Rigid3DTransform_double_3_3" << std::endl ;
+       return 1 ;
+    }
+    affineTransform = AffineTransformType::New() ;
+    affineTransform->SetMatrix( rigidTransform->GetMatrix() ) ;
+  }
+  return 0 ;
+}
+
 int ComposeAffineTransforms( int argc , char* argv[] )
 {
   if( argc != 5 )
@@ -33,18 +55,16 @@ int ComposeAffineTransforms( int argc , char* argv[] )
      return 1 ;
   }
   typedef itk::AffineTransform< double , 3 > AffineTransformType ;
-  //AffineTransformType::Pointer composedTransform = AffineTransform::New() ;
-  //composedTransform->SetIdentity() ;
-  //Load the transforms
-  AffineTransformType::Pointer affineTransform1
-            = dynamic_cast< AffineTransformType* > ( transformFile1->GetTransformList()->front().GetPointer() ) ;
-  AffineTransformType::Pointer affineTransform2
-            = dynamic_cast< AffineTransformType* > ( transformFile2->GetTransformList()->front().GetPointer() ) ;
-          if( !affineTransform1 || !affineTransform2 )
-            {
-            std::cout << "Transforms must be of type AffineTransform_double_3_3" << std::endl ;
-            return 1 ;
-            }
+  AffineTransformType::Pointer affineTransform1 ;
+  AffineTransformType::Pointer affineTransform2 ;
+  if( ReadTransform( transformFile1 , affineTransform1 ) )
+  {
+    return 1 ;
+  }
+  if( ReadTransform( transformFile2 , affineTransform2 ) )
+  {
+    return 1 ;
+  }
   affineTransform1->Compose( affineTransform2 , true ) ;
   //Compose transforms
   //Save transform
