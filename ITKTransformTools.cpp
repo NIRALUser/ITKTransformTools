@@ -49,7 +49,7 @@ int main( int argc , char* argv[] )
     std::cout << "     " << argv[ 0 ] << " direction ... Computes the transform to resample an image with an identity direction matrix" << std::endl ;
     std::cout << "    " << argv[ 0 ] << " freesurfer ... Converts FreeSurfer affine transforms to itkTransforms" << std::endl ;
     std::cout << "        " << argv[ 0 ] << " MO2Aff ... Modifies the transform file created by ANTs from a MatrixOffsetTransformBase_double_3_3 type to an AffineTransform_double_3_3" << std::endl ;
-    std::cout << "         " << argv[ 0 ] << " print ... Prints the transformation matrix and the translation of the transform" << std::endl ;
+    std::cout << "         " << argv[ 0 ] << " print ... Prints the transformation matrix and the offset of the transform" << std::endl ;
     std::cout << "      " << argv[ 0 ] << " rotation ... Extract the rotation from the affine transform (Finite Strain)" << std::endl ;
     std::cout << "       " << argv[ 0 ] << " convert ... Converts transforms from double->float or float->double" << std::endl ;
     return 1 ;
