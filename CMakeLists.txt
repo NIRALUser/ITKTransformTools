@@ -25,6 +25,8 @@ PrintITKTransform.cpp
 PrintITKTransform.h
 RotationExtraction.h
 RotationExtraction.cpp
+ConvertTransform.h
+ConvertTransform.cpp
 )
 
 add_executable( ITKTransformTools ${ITKTransformTools_SRC} )

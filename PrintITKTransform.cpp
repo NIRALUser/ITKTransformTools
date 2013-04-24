@@ -25,6 +25,7 @@ int PrintITKTransform( int argc , char* argv[] )
   }
   typedef itk::AffineTransform< double , 3 > AffineTransformType ;
   AffineTransformType::Pointer affineTransform ;
+  std::cout << transformFile->GetTransformList()->front().GetPointer()->GetTransformTypeAsString() << std::endl ;
   if( ReadTransform( transformFile , affineTransform ) )
   {
     return 1 ;
