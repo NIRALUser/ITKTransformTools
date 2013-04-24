@@ -2,9 +2,11 @@
 #include "CombineITKTransforms.h"
 #include "ComposeAffineTransforms.h"
 #include "GetNewSizeAndOrigin.h"
+#include "PrintITKTransform.h"
 #include "DirectionToTransformMatrix.h"
 #include "FreeSurferTransforms.h"
 #include "MatrixOffsetToAffine.h"
+#include "RotationExtraction.h"
 #include <string.h>
 
 int main( int argc , char* argv[] )
@@ -29,6 +31,8 @@ int main( int argc , char* argv[] )
            && strcmp( argv[1] , "spacing" )
            && strcmp( argv[1] , "direction" )
            && strcmp( argv[1] , "MO2Aff" )
+           && strcmp( argv[1] , "print" )
+           && strcmp( argv[1] , "rotation" )
            && strcmp( argv[1] , "freesurfer" )
          )
     )
@@ -43,6 +47,8 @@ int main( int argc , char* argv[] )
     std::cout << "     " << argv[ 0 ] << " direction ... Computes the transform to resample an image with an identity direction matrix" << std::endl ;
     std::cout << "    " << argv[ 0 ] << " freesurfer ... Converts FreeSurfer affine transforms to itkTransforms" << std::endl ;
     std::cout << "        " << argv[ 0 ] << " MO2Aff ... Modifies the transform file created by ANTs from a MatrixOffsetTransformBase_double_3_3 type to an AffineTransform_double_3_3" << std::endl ;
+    std::cout << "         " << argv[ 0 ] << " print ... Prints the transformation matrix and the translation of the transform" << std::endl ;
+    std::cout << "      " << argv[ 0 ] << " rotation ... Extract the rotation from the affine transform (Finite Strain)" << std::endl ;
     return 1 ;
   }
   else
@@ -86,6 +92,14 @@ int main( int argc , char* argv[] )
     else if( !strcmp( argv[ 1 ] , "MO2Aff" ) )
     {
        return MatrixOffsetToAffine( argc , argv ) ;
+    }
+    else if( !strcmp( argv[ 1 ] , "print" ) )
+    {
+       return PrintITKTransform( argc , argv ) ;
+    }
+   else if( !strcmp( argv[ 1 ] , "rotation" ) )
+    {
+       return RotationExtraction( argc , argv ) ;
     }
   }
   return 1 ;

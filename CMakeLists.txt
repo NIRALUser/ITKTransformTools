@@ -21,6 +21,10 @@ FreeSurferTransforms.cpp
 FreeSurferTransforms.h
 MatrixOffsetToAffine.h
 MatrixOffsetToAffine.cpp
+PrintITKTransform.cpp
+PrintITKTransform.h
+RotationExtraction.h
+RotationExtraction.cpp
 )
 
 add_executable( ITKTransformTools ${ITKTransformTools_SRC} )

@@ -20,7 +20,7 @@ int ReadTransform( itk::TransformFileReader::Pointer transformFile , itk::Affine
     }
     affineTransform = AffineTransformType::New() ;
     affineTransform->SetMatrix( rigidTransform->GetMatrix() ) ;
-    affineTransform->SetTranslation( rigidTransform->GetTranslation() ) ;
+    affineTransform->SetOffset( rigidTransform->GetOffset() ) ;
   }
   return 0 ;
 }
