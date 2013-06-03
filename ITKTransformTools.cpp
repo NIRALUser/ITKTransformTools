@@ -8,6 +8,8 @@
 #include "MatrixOffsetToAffine.h"
 #include "RotationExtraction.h"
 #include "ConvertTransform.h"
+#include "ConcatenateTransforms.h"
+#include "Invert.h"
 #include <string.h>
 
 int main( int argc , char* argv[] )
@@ -36,6 +38,8 @@ int main( int argc , char* argv[] )
            && strcmp( argv[1] , "rotation" )
            && strcmp( argv[1] , "convert" )
            && strcmp( argv[1] , "freesurfer" )
+           && strcmp( argv[1] , "concatenate" )
+           && strcmp( argv[1] , "invert" )
          )
     )
   {
@@ -52,6 +56,8 @@ int main( int argc , char* argv[] )
     std::cout << "         " << argv[ 0 ] << " print ... Prints the transformation matrix and the offset of the transform" << std::endl ;
     std::cout << "      " << argv[ 0 ] << " rotation ... Extract the rotation from the affine transform (Finite Strain)" << std::endl ;
     std::cout << "       " << argv[ 0 ] << " convert ... Converts transforms from double->float or float->double" << std::endl ;
+    std::cout << "   " << argv[ 0 ] << " concatenate ... Concatenate transforms" << std::endl ;
+    std::cout << "        " << argv[ 0 ] << " invert ... invert a transform" << std::endl ;
     return 1 ;
   }
   else
@@ -107,6 +113,14 @@ int main( int argc , char* argv[] )
    else if( !strcmp( argv[ 1 ] , "convert" ) )
     {
        return Convert( argc , argv ) ;
+    }
+   else if( !strcmp( argv[ 1 ] , "concatenate" ) )
+    {
+       return Concatenate( argc , argv ) ;
+    }
+   else if( !strcmp( argv[ 1 ] , "invert" ) )
+    {
+       return Invert( argc , argv ) ;
     }
   }
   return 1 ;

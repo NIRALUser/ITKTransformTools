@@ -27,7 +27,17 @@ RotationExtraction.h
 RotationExtraction.cpp
 ConvertTransform.h
 ConvertTransform.cpp
+ConcatenateTransforms.cpp
+ConcatenateTransforms.h
+Invert.h
+Invert.cpp
+dtiprocessFiles/deformationfieldio.h
+dtiprocessFiles/deformationfieldio.cxx
+dtiprocessFiles/itkHFieldToDeformationFieldImageFilter.h
+dtiprocessFiles/itkHFieldToDeformationFieldImageFilter.txx
 )
+
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 
 add_executable( ITKTransformTools ${ITKTransformTools_SRC} )
 

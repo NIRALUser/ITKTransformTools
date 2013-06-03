@@ -1,5 +1,5 @@
 #include "ComposeAffineTransforms.h"
-
+#include <itkTransformFactory.h>
 
 
 int ReadTransform( itk::TransformFileReader::Pointer transformFile , itk::AffineTransform< double , 3 >::Pointer &affineTransform )
@@ -22,6 +22,23 @@ int ReadTransform( itk::TransformFileReader::Pointer transformFile , itk::Affine
     affineTransform->SetMatrix( rigidTransform->GetMatrix() ) ;
     affineTransform->SetOffset( rigidTransform->GetOffset() ) ;
   }
+  transformFile->GetTransformList()->pop_front() ;
+  return 0 ;
+}
+
+int ComposeAffineWithFile( itk::AffineTransform< double , 3 >::Pointer &affineTransform1 , itk::TransformFileReader::Pointer &transformFile )
+{
+  //Compose transforms
+  typedef itk::AffineTransform< double , 3 > AffineTransformType ;
+  AffineTransformType::Pointer affineTransform2 ;
+  while( transformFile->GetTransformList()->size() ) 
+  {
+    if( ReadTransform( transformFile , affineTransform2 ) )
+    {
+      return 1 ;
+    }
+    affineTransform1->Compose( affineTransform2 , true ) ;
+  }
   return 0 ;
 }
 
@@ -38,41 +55,30 @@ int ComposeAffineTransforms( int argc , char* argv[] )
   input2.assign( argv[ 3 ] ) ;
   std::string output ;
   output.assign( argv[ 4 ] ) ;
-  //Read transform files
-  itk::TransformFileReader::Pointer transformFile1 ;
-  transformFile1 = itk::TransformFileReader::New() ;
-  transformFile1->SetFileName( input1 ) ;
-  transformFile1->Update() ;
-  itk::TransformFileReader::Pointer transformFile2 ;
-  transformFile2 = itk::TransformFileReader::New() ;
-  transformFile2->SetFileName( input2 ) ;
-  transformFile2->Update() ;
-  //Check that transform files contain only one transform
-  if( transformFile1->GetTransformList()->size() != 1
-   || transformFile2->GetTransformList()->size() != 1
-    )
-  {
-     std::cout<< "Transform files must contain only 1 transform" << std::endl ;
-     return 1 ;
-  }
+  //Compose
   typedef itk::AffineTransform< double , 3 > AffineTransformType ;
-  AffineTransformType::Pointer affineTransform1 ;
-  AffineTransformType::Pointer affineTransform2 ;
-  if( ReadTransform( transformFile1 , affineTransform1 ) )
+  AffineTransformType::Pointer affineTransform ;
+  itk::TransformFileReader::Pointer transformFile ;
+  itk::TransformFactory< itk::MatrixOffsetTransformBase<double, 3, 3> >::RegisterTransform();
+  transformFile = itk::TransformFileReader::New() ;
+  transformFile->SetFileName( input1 ) ;
+  transformFile->Update() ;
+  ReadTransform( transformFile , affineTransform ) ;
+  if( ComposeAffineWithFile( affineTransform , transformFile ) )
   {
     return 1 ;
   }
-  if( ReadTransform( transformFile2 , affineTransform2 ) )
+  transformFile->SetFileName( input2 ) ;
+  transformFile->Update() ;
+  if( ComposeAffineWithFile( affineTransform , transformFile ) )
   {
     return 1 ;
   }
-  affineTransform1->Compose( affineTransform2 , true ) ;
-  //Compose transforms
   //Save transform
   itk::TransformFileWriter::Pointer outputTransformFile ;
   outputTransformFile = itk::TransformFileWriter::New() ;
   outputTransformFile->SetFileName( output.c_str() ) ;
-  outputTransformFile->SetInput( affineTransform1 ) ;
+  outputTransformFile->SetInput( affineTransform ) ;
   outputTransformFile->Update() ;
   return 0 ;
 }
