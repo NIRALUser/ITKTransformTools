@@ -8,7 +8,6 @@
 #include <itkTransformDeformationFieldFilter.h>
 #include <itkMatrix.h>
 #include <itkPoint.h>
-#include "dtiprocessFiles/deformationfieldio.h"
 #include <itkVectorResampleImageFilter.h>
 #include "itkWarpTransform3D.h"
 #include <itkTransformFileReader.h>
@@ -25,7 +24,7 @@ void Print( std::ostream &stream , std::string text , bool print )
   }
 }
 
-int GetTransformFileType( const char *filename , bool print = false )
+int GetTransformFileType( const char *filename , bool print )
 {
   typedef itk::ImageFileReader< DeformationImageType > ReaderType ;
   typedef itk::TransformFileReader TransformReaderType ;
