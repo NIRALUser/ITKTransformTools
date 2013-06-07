@@ -356,11 +356,11 @@ int Concatenate( int argc , char* argv[] )
   {
     std::cout << argv[ 0 ] << " " << argv[ 1 ] << " outputTransform [-r ReferenceImage] [inputTransform1 [inputTransform2] [type:displacement/h-Field] ... ]" << std::endl ;
     std::cout << "inputTransforms should be in the order in which they are applied to the input image" << std::endl ;
-    std::cout << "outputTransform is either an ITKTransform (if only affine transforms are given) or a displacement field saved as an ITK image. In the later case, a reference image is necessary" << std::endl ;
+    std::cout << "outputTransform is either an ITKTransform (if only affine transforms are given and no reference image is given) or a displacement field saved as an ITK image. In the latter case, a reference image is necessary" << std::endl ;
     return 1 ;
   }
   outputFileName = argv[ 2 ] ;
-  if( NotOnlyAffine( transformFileNames , deformationFieldType ) )
+  if( NotOnlyAffine( transformFileNames , deformationFieldType ) || reference )
   {
     if( !reference )
     {
