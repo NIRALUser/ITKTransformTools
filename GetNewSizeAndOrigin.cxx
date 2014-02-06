@@ -187,7 +187,7 @@ void ComputeIsoSpacing( itk::Image< unsigned char , 3 >::SpacingType &spacing )
 int Iso( int argc , char** argv )
 {
    char* gridName = NULL ;
-   if( !(argc == 3 || argc == 5 && !strcmp( argv[ 3 ] , "--grid" ) ) )
+   if( !(argc == 3 || ( argc == 5 && !strcmp( argv[ 3 ] , "--grid" ) ) ) )
    {
       std::cout<< argv[ 0 ] << " " << argv[ 1 ] << " InputImage [--grid gridName]" << std::endl ;
       return EXIT_FAILURE ;
@@ -252,6 +252,7 @@ int Spacing( int argc , char** argv )
    {
       return EXIT_FAILURE ;
    }
+   return EXIT_SUCCESS ;
 }
 
 int ScalingWithAtlas( int argc , char** argv )

@@ -5,7 +5,6 @@
 int Invert( int argc , char* argv[] )
 {
   //check arguments
-  bool badArguments = false ;
   if( argc != 4 )
   {
     std::cout<< argv[ 0 ] << " " << argv[ 1 ] << " inputTransform outputTransform" << std::endl ;
@@ -35,4 +34,5 @@ int Invert( int argc , char* argv[] )
   transformWriter->SetFileName( argv[ 3 ] ) ;
   transformWriter->AddTransform( inverse ) ;
   transformWriter->Update() ;
+  return 0 ;
 }

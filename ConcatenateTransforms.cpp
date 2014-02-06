@@ -201,6 +201,7 @@ int AddTransforms( DeformationImageType::Pointer & field , itk::Transform<double
   transformDeformationFieldFilter->Update() ;
   field = transformDeformationFieldFilter->GetOutput() ;
   field->DisconnectPipeline() ;
+  return 0 ;
 }
 
 int ConcatenateNonRigidTransforms( std::vector< std::string > transformFileNames , std::vector< std::string > deformationFieldType , std::string outputFileName , std::string referenceFileName )
@@ -331,9 +332,9 @@ int Concatenate( int argc , char* argv[] )
   bool badArguments = false ;
   bool reference = false ;
   std::string referenceFileName ;
-  unsigned int const minumNumberOfArguments = 4 ;
+  int const minumNumberOfArguments = 4 ;
   int firstTransform = minumNumberOfArguments - 1 ;
-  unsigned int numberOfOptionalArguments = 0 ;
+  int numberOfOptionalArguments = 0 ;
   std::string outputFileName ;
   if( argc >= minumNumberOfArguments && !strcmp( argv[ firstTransform ] , "-r") )
   {
