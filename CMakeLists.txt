@@ -2,6 +2,21 @@ cmake_minimum_required(VERSION 2.6)
 
 project( ITKTransformTools )
 
+
+
+if(NOT SETIFEMPTY)
+macro(SETIFEMPTY)
+  set(KEY ${ARGV0})
+  set(VALUE ${ARGV1})
+  if(NOT ${KEY})
+    set(${KEY} ${VALUE})
+  endif(NOT ${KEY})
+endmacro(SETIFEMPTY KEY VALUE)
+endif(NOT SETIFEMPTY)
+###
+SETIFEMPTY(INSTALL_RUNTIME_DESTINATION bin)
+
+
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
@@ -42,3 +57,5 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 add_executable( ITKTransformTools ${ITKTransformTools_SRC} )
 
 TARGET_LINK_LIBRARIES( ITKTransformTools ${ITK_LIBRARIES} )
+
+install(TARGETS ITKTransformTools RUNTIME DESTINATION ${INSTALL_RUNTIME_DESTINATION} )
