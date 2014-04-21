@@ -33,7 +33,7 @@ int ComputeSizeAndOrigin( itk::Image< unsigned char , 3 >::Pointer image ,
    ImageType::PointType min ;
    min.Fill( std::numeric_limits< double >::max() ) ;
    ImageType::PointType max ;
-   max.Fill( std::numeric_limits< double >::min() ) ;
+   max.Fill( -std::numeric_limits< double >::max() ) ;
    for( int i = 0 ; i < 8 ; i++ )
    {
       ImageType::PointType corner ;
