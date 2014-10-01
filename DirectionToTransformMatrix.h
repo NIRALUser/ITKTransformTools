@@ -2,6 +2,6 @@
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkMatrix.h>
-#include <itkRigid3DTransform.h>
+#include <itkv3Rigid3DTransform.h>
 
 int DirectionToTransformMatrix( int argc , char* argv[] );

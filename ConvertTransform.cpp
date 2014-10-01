@@ -2,7 +2,7 @@
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 #include <itkAffineTransform.h>
-#include <itkRigid3DTransform.h>
+#include <itkv3Rigid3DTransform.h>
 #include <list>
 #include <string.h>
 #include "ConvertTransform.h"
@@ -40,7 +40,7 @@ template< class U , class V >
 int ReadTransforms( std::string input , std::string output )
 {
   typedef itk::AffineTransform< U , 3 > InputAffineType ;
-  typedef itk::Rigid3DTransform< U > InputRigidType ;
+  typedef itkv3::Rigid3DTransform< U > InputRigidType ;
   itk::TransformFileReader::Pointer transformFile = itk::TransformFileReader::New() ;
   transformFile->SetFileName( input.c_str() ) ;
   transformFile->Update() ;
@@ -57,7 +57,7 @@ int ReadTransforms( std::string input , std::string output )
     rigid = dynamic_cast< InputRigidType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
     if( rigid )
     {
-      typedef itk::Rigid3DTransform< V > OutputRigidType ;
+      typedef itkv3::Rigid3DTransform< V > OutputRigidType ;
       return ConvertType< InputRigidType , OutputRigidType , V >( rigid , output ) ;
     }
     else
