@@ -6,6 +6,7 @@
 #include <list>
 #include <string.h>
 #include "ConvertTransform.h"
+#include "itkVersion.h"
 
 template< class S , class T , class V >
 int ConvertType( typename S::Pointer inputTransform , std::string output )
@@ -29,7 +30,13 @@ int ConvertType( typename S::Pointer inputTransform , std::string output )
      outputParam.SetElement( i , static_cast< V >( inputParam.GetElement( i ) ) ) ;
   }
   outputTransform->SetFixedParameters( outputParam ) ;
-  itk::TransformFileWriter::Pointer transformWriter = itk::TransformFileWriter::New() ;
+  #if (ITK_VERSION_MAJOR == 4 && ITK_VERSION_MINOR >= 5) || ITK_VERSION_MAJOR> 4
+  typename itk::TransformFileWriterTemplate< V >::Pointer transformWriter =
+     itk::TransformFileWriterTemplate< V >::New() ;
+  #else
+  itk::TransformFileWriter::Pointer transformWriter = itk::TransformFileWriter::New();
+  #endif
+
   transformWriter->SetFileName( output.c_str() ) ;
   transformWriter->AddTransform( outputTransform ) ;
   transformWriter->Update() ;
@@ -40,11 +47,16 @@ template< class U , class V >
 int ReadTransforms( std::string input , std::string output )
 {
   typedef itk::AffineTransform< U , 3 > InputAffineType ;
-  typedef itkv3::Rigid3DTransform< U > InputRigidType ;
+  typedef itk::Rigid3DTransform< U > InputRigidType ;
+  #if (ITK_VERSION_MAJOR == 4 && ITK_VERSION_MINOR >= 5) || ITK_VERSION_MAJOR> 4
+  typename itk::TransformFileReaderTemplate< U >::Pointer transformFile =
+     itk::TransformFileReaderTemplate< U >::New() ;
+  #else
   itk::TransformFileReader::Pointer transformFile = itk::TransformFileReader::New() ;
+  #endif
   transformFile->SetFileName( input.c_str() ) ;
   transformFile->Update() ;
-  typename InputAffineType::Pointer affine = InputAffineType::New() ;
+  typename InputAffineType::Pointer affine ;
   affine = dynamic_cast< InputAffineType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
   if( affine )
   {
@@ -53,7 +65,7 @@ int ReadTransforms( std::string input , std::string output )
   }
   else
   {
-    typename InputRigidType::Pointer rigid = InputRigidType::New() ;
+    typename InputRigidType::Pointer rigid ;
     rigid = dynamic_cast< InputRigidType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
     if( rigid )
     {
