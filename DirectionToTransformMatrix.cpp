@@ -16,7 +16,7 @@ int DirectionToTransformMatrix( int argc , char* argv[] )
   typedef ImageType::DirectionType MatrixType ;
   MatrixType matrix = imageFile->GetOutput()->GetDirection() ;
   //Set parameters
-  typedef itk::Rigid3DTransform< double > RigidTransformType ;
+  typedef itkv3::Rigid3DTransform< double > RigidTransformType ;
   RigidTransformType::Pointer rigid = RigidTransformType::New() ;
   rigid->SetMatrix( matrix ) ;
   //Creation of the itkTransformFileWriter

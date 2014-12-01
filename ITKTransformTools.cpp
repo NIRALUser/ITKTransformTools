@@ -12,6 +12,8 @@
 #include "Invert.h"
 #include <string.h>
 
+#define ITKTransformVersion "1.2.2"
+
 int main( int argc , char* argv[] )
 {
   char* pos = strrchr( argv[ 0 ] , '/' ) ;
@@ -40,6 +42,7 @@ int main( int argc , char* argv[] )
            && strcmp( argv[1] , "freesurfer" )
            && strcmp( argv[1] , "concatenate" )
            && strcmp( argv[1] , "invert" )
+           && strcmp( argv[1] , "version" )
          )
     )
   {
@@ -54,14 +57,20 @@ int main( int argc , char* argv[] )
     std::cout << "    " << argv[ 0 ] << " freesurfer ... Converts FreeSurfer affine transforms to itkTransforms" << std::endl ;
     std::cout << "        " << argv[ 0 ] << " MO2Aff ... Modifies the transform file created by ANTs from a MatrixOffsetTransformBase_double_3_3 type to an AffineTransform_double_3_3" << std::endl ;
     std::cout << "         " << argv[ 0 ] << " print ... Prints the transformation matrix and the offset of the transform" << std::endl ;
-    std::cout << "      " << argv[ 0 ] << " rotation ... Extract the rotation from the affine transform (Finite Strain)" << std::endl ;
+    std::cout << "      " << argv[ 0 ] << " rotation ... Extracts the rotation from the affine transform (Finite Strain)" << std::endl ;
     std::cout << "       " << argv[ 0 ] << " convert ... Converts transforms from double->float or float->double" << std::endl ;
-    std::cout << "   " << argv[ 0 ] << " concatenate ... Concatenate transforms" << std::endl ;
-    std::cout << "        " << argv[ 0 ] << " invert ... invert a transform" << std::endl ;
+    std::cout << "   " << argv[ 0 ] << " concatenate ... Concatenates transforms" << std::endl ;
+    std::cout << "        " << argv[ 0 ] << " invert ... inverts a transform" << std::endl ;
+    std::cout << "       " << argv[ 0 ] << " version ... prints version number" << std::endl ;
     return 1 ;
   }
   else
   {
+    if( !strcmp( argv[ 1 ] , "version") )
+    {
+      std::cout<<argv[ 0 ]<< " version: " << ITKTransformVersion << std::endl ;
+      return 0 ;
+    }
     if( !strcmp( argv[ 1 ] , "combine") )
     {
       return CombineITKTransforms( argc , argv ) ;

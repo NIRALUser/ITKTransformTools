@@ -5,7 +5,7 @@
 #include <math.h>
 #include <itkMatrixOffsetTransformBase.h>
 #include <sstream>
-#include <itkRigid3DTransform.h>
+#include <itkv3Rigid3DTransform.h>
 
 #ifndef EXITSUCCESS
 #define EXIT_SUCCESS 0

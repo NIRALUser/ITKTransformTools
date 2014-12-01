@@ -33,7 +33,7 @@ int ComputeSizeAndOrigin( itk::Image< unsigned char , 3 >::Pointer image ,
    ImageType::PointType min ;
    min.Fill( std::numeric_limits< double >::max() ) ;
    ImageType::PointType max ;
-   max.Fill( std::numeric_limits< double >::min() ) ;
+   max.Fill( -std::numeric_limits< double >::max() ) ;
    for( int i = 0 ; i < 8 ; i++ )
    {
       ImageType::PointType corner ;
@@ -196,7 +196,7 @@ int Iso( int argc , char** argv )
    {
       gridName = argv[ 4 ] ;
    }
-   itk::Rigid3DTransform< float >::Pointer rigid = itk::Rigid3DTransform< float >::New() ;
+   itkv3::Rigid3DTransform< float >::Pointer rigid = itkv3::Rigid3DTransform< float >::New() ;
    rigid->SetIdentity() ;
    typedef itk::MatrixOffsetTransformBase< float , 3 , 3 > TransformTypeFloat ;
    TransformTypeFloat::Pointer transformFloat = dynamic_cast< TransformTypeFloat* > ( rigid.GetPointer() ) ;
@@ -235,7 +235,7 @@ int Spacing( int argc , char** argv )
       std::cout<< argv[ 0 ] << " " << argv[ 1 ] << " ReferenceImage SpacingImage outputGridImage" << std::endl ;
       return EXIT_FAILURE ;
    }
-   itk::Rigid3DTransform< float >::Pointer rigid = itk::Rigid3DTransform< float >::New() ;
+   itkv3::Rigid3DTransform< float >::Pointer rigid = itkv3::Rigid3DTransform< float >::New() ;
    typedef itk::MatrixOffsetTransformBase< float , 3 , 3 > TransformTypeFloat ;
    TransformTypeFloat::Pointer transformFloat
           = dynamic_cast< TransformTypeFloat* > ( rigid.GetPointer() ) ;
@@ -262,7 +262,7 @@ int ScalingWithAtlas( int argc , char** argv )
       std::cout<< argv[ 0 ] << " " << argv[ 1 ] << " InputImage AtlasImage outputGridImage outputAtlasGridImage" << std::endl ;
       return EXIT_FAILURE ;
    }
-   itk::Rigid3DTransform< float >::Pointer rigid = itk::Rigid3DTransform< float >::New() ;
+   itkv3::Rigid3DTransform< float >::Pointer rigid = itkv3::Rigid3DTransform< float >::New() ;
    typedef itk::MatrixOffsetTransformBase< float , 3 , 3 > TransformTypeFloat ;
    TransformTypeFloat::Pointer transformFloat
           = dynamic_cast< TransformTypeFloat* > ( rigid.GetPointer() ) ;

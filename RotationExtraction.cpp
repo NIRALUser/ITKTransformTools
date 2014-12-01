@@ -1,5 +1,5 @@
 #include "RotationExtraction.h"
-#include <itkRigid3DTransform.h>
+#include <itkv3Rigid3DTransform.h>
 #include <itkMatrixOffsetTransformBase.h>
 #include <itkImageFileReader.h>
 #include <itkImage.h>
@@ -89,7 +89,7 @@ int RotationExtraction( int argc , char* argv[] )
   }
   itk::Matrix< double , 3 , 3 > rotationMatrix ;
   rotationMatrix = ComputeRotationMatrixFromTransformationMatrix( affineTransform->GetMatrix() ) ;
-  typedef itk::Rigid3DTransform< double > Rigid3DTransformType ;
+  typedef itkv3::Rigid3DTransform< double > Rigid3DTransformType ;
   Rigid3DTransformType::Pointer rigidTransform = Rigid3DTransformType::New() ;
   rigidTransform->SetMatrix( rotationMatrix ) ;
   rigidTransform->SetTranslation( affineTransform->GetTranslation() ) ;
