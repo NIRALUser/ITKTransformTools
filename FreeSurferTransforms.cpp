@@ -102,7 +102,7 @@ int FreeSurferTransforms( int argc , char* argv[] )
   }
   if( count != 3 )
   {
-    std::cerr << "Input File do not have the correct format" << std::endl ;
+    std::cerr << "Input File does not have the correct format" << std::endl ;
     return -1 ;
   }
   itk::Matrix< double , 3 >  RAS ;
