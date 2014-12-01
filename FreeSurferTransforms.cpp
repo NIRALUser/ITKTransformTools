@@ -53,38 +53,11 @@ bool StringtonDoubles( std::string s , int n , std::vector< double > &d )
     }
 }
 
-int FreeSurferTransforms( int argc , char* argv[] )
+int LinearTransformReader( std::ifstream &ifile , itk::Matrix< double , 3 > &matrix , itk::Vector< double , 3 > &vector )
 {
-  if( argc != 4 )
-  {
-    std::cout<< argv[ 0 ] << " " << argv[ 1 ] << " freeSurferTransform itkTransform" << std::endl ;
-    return 1 ;
-  }
-  std::ifstream ifile( argv[ 2 ] ) ;
-  if( !ifile )
-  {
-    std::cerr << "File seemed to end prematurely. Load failed." << std::endl ;
-    return -1 ;
-  }
+  int count = 0 ;
   std::string readline ;
   std::vector< double > vec ;
-  bool begin = false ;
-  while( ifile && !begin )
-  {  
-    std::getline( ifile , readline ) ;
-    if( !readline.compare( 0 , 18 , "Linear_Transform =" , 0 , 18 ) )
-    {
-      begin = true ;
-    }
-  }
-  if( begin == false )
-  {
-    std::cerr << "Linear transform not found" << std::endl ;
-    return -1 ;
-  }
-  int count = 0 ;
-  itk::Matrix< double , 3 > matrix ;
-  itk::Vector< double , 3 > vector ;
   while( ifile && count != 3 )
   {
     std::getline( ifile , readline ) ;
@@ -103,6 +76,114 @@ int FreeSurferTransforms( int argc , char* argv[] )
   if( count != 3 )
   {
     std::cerr << "Input File does not have the correct format" << std::endl ;
+    return 1 ;
+  }
+  return 0 ;
+}
+
+int ltaReader( std::ifstream &ifile , itk::Matrix< double , 3 > &matrix , itk::Vector< double , 3 > &vector )
+{
+  std::string readline ;
+  std::vector< double > vec ;
+  bool begin = false ;
+  while( ifile && !begin )
+  {
+    std::getline( ifile , readline ) ;
+    if( !readline.compare( 0 , 5 , "sigma" , 0 , 5 ) )
+    {
+      begin = 1 ;
+    }
+  }
+  if( !begin )
+  {
+    std::cerr << "Could not find beginning of transform" << std::endl ;
+    return 1 ;
+  }
+  //Read line containing transform matrix size and make sure that it is a 4x4 matrix
+  std::getline( ifile , readline ) ;
+  if( !StringtonDoubles( readline , 3 , vec ) )
+  {
+    std::cerr << "Problems while reading input file: input transform matrix size could not be read" << std::endl ;
+    return 2 ;
+  }
+  if( vec[ 1 ] != 4 || vec[ 2 ] != 4 )
+  {
+    std::cerr << "Problems while reading input file: input transform matrix is not a 4x4 matrix" << std::endl ;
+    return 3 ;
+  } 
+  //
+  int count = 0 ;
+  while( ifile && count != 3 )
+  {
+    std::getline( ifile , readline ) ;
+    if( !StringtonDoubles( readline , 4 , vec ) )
+    {
+      std::cerr << "Problems while reading input file" << std::endl ;
+      return 4 ;
+    }
+    for( int i = 0 ; i < 3 ; i++ )
+    {
+      matrix[ count ][ i ] = vec[ i ] ;
+    }
+    vector[ count ] = vec[ 3 ] ;
+    count ++ ;
+  }
+  if( count != 3 )
+  {
+    std::cerr << "Input File do not have the correct format" << std::endl ;
+    return 5 ;
+  }
+  return 0 ;
+}
+
+int FreeSurferTransforms( int argc , char* argv[] )
+{
+  if( argc != 4 )
+  {
+    std::cout<< argv[ 0 ] << " " << argv[ 1 ] << " freeSurferTransform itkTransform" << std::endl ;
+    return 1 ;
+  }
+  std::ifstream ifile( argv[ 2 ] ) ;
+  if( !ifile )
+  {
+    std::cerr << "File seemed to end prematurely. Load failed." << std::endl ;
+    return -1 ;
+  }
+  std::string readline ;
+  int begin = 0 ;
+  while( ifile && !begin )
+  {  
+    std::getline( ifile , readline ) ;
+    if( !readline.compare( 0 , 18 , "Linear_Transform =" , 0 , 18 ) )
+    {
+      begin = 1 ;
+    }
+    else if( !readline.compare( 0 , 14 , "# transform file" , 0 , 14 ) )
+    {
+      begin = 2 ;//lta files
+    }
+  }
+  itk::Matrix< double , 3 > matrix ;
+  itk::Vector< double , 3 > vector ;
+  if( begin == 1 )
+  {
+    std::cout << "Linear transform found" << std::endl ;
+    if( LinearTransformReader( ifile , matrix , vector ) )
+    {
+      return -1 ;
+    }
+  }
+  else if( begin == 2 )
+  {
+    std::cout << "lta transform found" << std::endl ;
+    if( ltaReader( ifile , matrix , vector ) )
+    {
+      return -1 ;
+    }
+  }
+  else
+  {
+    std::cerr << "Transform type not found" << std::endl ;
     return -1 ;
   }
   itk::Matrix< double , 3 >  RAS ;
@@ -121,7 +202,14 @@ int FreeSurferTransforms( int argc , char* argv[] )
   itk::TransformFileWriter::Pointer outputTransformFile ;
   outputTransformFile = itk::TransformFileWriter::New() ;
   outputTransformFile->SetFileName( argv[ 3 ] ) ;
-  outputTransformFile->SetInput( inverseTransform ) ;
+  if( begin == 1 )
+  {
+    outputTransformFile->SetInput( inverseTransform ) ;
+  }
+  else
+  {
+    outputTransformFile->SetInput( affineTransform ) ;
+  }
   outputTransformFile->Update() ;
   return 0 ;
 }
