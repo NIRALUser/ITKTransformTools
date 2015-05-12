@@ -1,5 +1,5 @@
 #include "PrintITKTransform.h"
-
+#include <itkTransformFactory.h>
 
 
 int PrintITKTransform( int argc , char* argv[] )
@@ -12,6 +12,7 @@ int PrintITKTransform( int argc , char* argv[] )
   std::string input ;
   input.assign( argv[ 2 ] ) ;
   //Read transform files
+  itk::TransformFactory< itk::MatrixOffsetTransformBase<double, 3, 3> >::RegisterTransform();
   itk::TransformFileReader::Pointer transformFile ;
   transformFile = itk::TransformFileReader::New() ;
   transformFile->SetFileName( input ) ;

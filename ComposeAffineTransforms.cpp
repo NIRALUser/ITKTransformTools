@@ -4,10 +4,13 @@
 
 int ReadTransform( itk::TransformFileReader::Pointer transformFile , itk::AffineTransform< double , 3 >::Pointer &affineTransform )
 {
+  itk::TransformFactory< itk::MatrixOffsetTransformBase<double, 3, 3> >::RegisterTransform();
   typedef itk::AffineTransform< double , 3 > AffineTransformType ;
   typedef itk::Rigid3DTransform< double > Rigid3DTransformType ;
+	typedef itk::MatrixOffsetTransformBase< double , 3 , 3 > MatrixOffsetTransformBaseDoubleType ;
   //Load the transforms
   Rigid3DTransformType::Pointer rigidTransform ;
+	MatrixOffsetTransformBaseDoubleType::Pointer matrixOffsetTransformBaseDouble ;
   affineTransform
             = dynamic_cast< AffineTransformType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
   if( !affineTransform )
@@ -15,12 +18,25 @@ int ReadTransform( itk::TransformFileReader::Pointer transformFile , itk::Affine
     rigidTransform = dynamic_cast< Rigid3DTransformType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
     if( !rigidTransform )
     {
-       std::cerr << "Transforms must be of type AffineTransform_double_3_3 or Rigid3DTransform_double_3_3" << std::endl ;
+      matrixOffsetTransformBaseDouble = dynamic_cast< MatrixOffsetTransformBaseDoubleType* > ( transformFile->GetTransformList()->front().GetPointer() ) ;
+      if( !matrixOffsetTransformBaseDouble )
+      {
+       std::cerr << "Transforms must be of type AffineTransform_double_3_3, Rigid3DTransform_double_3_3, or MatrixOffsetTransformBaseDoubleType_double_3_3" << std::endl ;
        return 1 ;
+      }
+      else
+      {
+        affineTransform = AffineTransformType::New() ;
+        affineTransform->SetMatrix( matrixOffsetTransformBaseDouble->GetMatrix() ) ;
+        affineTransform->SetOffset( matrixOffsetTransformBaseDouble->GetOffset() ) ;
+      }
     }
-    affineTransform = AffineTransformType::New() ;
-    affineTransform->SetMatrix( rigidTransform->GetMatrix() ) ;
-    affineTransform->SetOffset( rigidTransform->GetOffset() ) ;
+    else
+    {
+      affineTransform = AffineTransformType::New() ;
+      affineTransform->SetMatrix( rigidTransform->GetMatrix() ) ;
+      affineTransform->SetOffset( rigidTransform->GetOffset() ) ;
+    }
   }
   transformFile->GetTransformList()->pop_front() ;
   return 0 ;

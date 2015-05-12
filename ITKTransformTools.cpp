@@ -12,7 +12,7 @@
 #include "Invert.h"
 #include <string.h>
 
-#define ITKTransformVersion "1.2.2"
+#define ITKTransformVersion "1.2.3"
 
 int main( int argc , char* argv[] )
 {
