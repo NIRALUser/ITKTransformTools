@@ -30,6 +30,29 @@ int GetTransformFileType( const char *filename , bool print )
   typedef itk::TransformFileReader TransformReaderType ;
   itk::TransformFactory< itk::MatrixOffsetTransformBase<double, 3, 3> >::RegisterTransform();
   ReaderType::Pointer reader = ReaderType::New() ;
+  std::stringstream buffer;
+  //We redirect the stdout and stderr so that the reader does not print an error message since
+  //we catch errors and handle them later. This is especially true for "h5" files that can be
+  //either images or transform files and therefore reading these files may lead to printing error
+  //messages that are confusing for the user.
+  //On Unix system, we redirect stdout and stderr in /dev/null so that messages are not printed
+  //on the screen.
+  //On Windows, we redirect stdout and stderr in NUL: which should also not print anything on
+  //the screen.
+  //Other systems are not handled as we don't know where to redirect the messages.
+  #ifdef __unix__
+  const char* redirectFile = "/dev/null" ;
+  #elif defined(_WIN32) || defined(WIN32)
+  const char* redirectFile = "NUL:" ;
+  #else
+  const char* redirectFile = "" ;//
+  #endif
+  FILE *ferr = ::freopen( redirectFile , "w" , stderr ) ;
+  if( ferr == NULL )
+  {
+    std::cerr<< "Could not redirect output" << std::endl ;
+  }
+
   int val = 1 ;
   try
   {
@@ -53,6 +76,7 @@ int GetTransformFileType( const char *filename , bool print )
     {
       //neither a deformation field or an ITK transform file
       Print( std::cerr , (std::string)filename + " -  Error - Not a transformation file" , print ) ;
+      fclose( ferr ) ;
       return -1 ;
     }
     int i = 0 ;
@@ -76,6 +100,7 @@ int GetTransformFileType( const char *filename , bool print )
       transformFile->GetTransformList()->pop_front();
     }
     //no spline
+    fclose( ferr ) ;
     return val ;
   } 
 }
@@ -302,17 +327,19 @@ int ConcatenateAffineTransforms( std::vector< std::string > transformFileNames ,
   std::cout << "Only affine transforms" << std::endl ;
   typedef itk::AffineTransform< double , 3 > AffineTransformType ;
   AffineTransformType::Pointer affineTransform ;
-  itk::TransformFileReader::Pointer transformFile ;
   itk::TransformFactory< itk::MatrixOffsetTransformBase<double, 3, 3> >::RegisterTransform();
+  itk::TransformFileReader::Pointer transformFile ;
   transformFile = itk::TransformFileReader::New() ;
   transformFile->SetFileName( transformFileNames[ 0 ] ) ;
   transformFile->Update() ;
   ReadTransform( transformFile , affineTransform ) ;
   for( unsigned int i = 1 ; i < transformFileNames.size() ; i++ )
   {
-    transformFile->SetFileName( transformFileNames[ i ] ) ;
-    transformFile->Update() ;
-    if( ComposeAffineWithFile( affineTransform , transformFile ) )
+    itk::TransformFileReader::Pointer transformFile2 ; // We use a new transform file reader object each time as using the same transform reader creates issues if the transform uses different IO
+    transformFile2 = itk::TransformFileReader::New() ;
+    transformFile2->SetFileName( transformFileNames[ i ] ) ;
+    transformFile2->Update() ;
+    if( ComposeAffineWithFile( affineTransform , transformFile2 ) )
     {
       return 1 ;
     }
