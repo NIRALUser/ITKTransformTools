@@ -1,0 +1,16 @@
+# - Config file for the ITKTransformTools package
+# It defines the following variables
+#  ITKTransformTools_INCLUDE_DIRS - include directories for ITKTransformTools
+#  ITKTransformTools_LIBRARIES    - libraries to link against
+#  ITKTransformTools_EXECUTABLE   - the bar executable
+ 
+# Compute paths
+get_filename_component(ITKTransformTools_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(ITKTransformTools_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+include_directories(${ITKTransformTools_INCLUDE_DIRS})
+ 
+# Our library dependencies (contains definitions for IMPORTED targets)
+
+if(EXISTS "${ITKTransformTools_CMAKE_DIR}/ITKTransformToolsTargets.cmake")
+include("${ITKTransformTools_CMAKE_DIR}/ITKTransformToolsTargets.cmake")
+endif()
