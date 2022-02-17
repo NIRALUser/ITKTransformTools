@@ -10,7 +10,7 @@
 #include "ConvertTransform.h"
 #include "ConcatenateTransforms.h"
 #include "Invert.h"
-#include <string.h>
+#include <cstring>
 
 #define ITKTransformVersion "1.2.3"
 

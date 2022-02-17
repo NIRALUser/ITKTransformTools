@@ -4,7 +4,7 @@
 #include <itkAffineTransform.h>
 #include <itkv3Rigid3DTransform.h>
 #include <list>
-#include <string.h>
+#include <cstring>
 #include "ConvertTransform.h"
 #include "itkVersion.h"
 

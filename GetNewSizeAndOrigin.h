@@ -2,7 +2,7 @@
 #include <itkImageFileReader.h>
 #include <itkTransformFileReader.h>
 #include <itkImageFileWriter.h>
-#include <math.h>
+#include <cmath>
 #include <itkMatrixOffsetTransformBase.h>
 #include <sstream>
 #include <itkv3Rigid3DTransform.h>
