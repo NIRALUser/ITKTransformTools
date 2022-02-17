@@ -10,17 +10,16 @@ itk::Matrix< double , 3 , 3 > ComputeMatrixSquareRoot( itk::Matrix< double , 3 ,
 {
   itk::Matrix< double , 3 , 3 > sqrMatrix;
 
-  vnl_matrix<double> M( 3, 3 );
-  M = matrix.GetVnlMatrix();
+  vnl_matrix<double> M = matrix.GetVnlMatrix().as_matrix();
   vnl_real_eigensystem eig( M );
-  vnl_matrix<vcl_complex<double> > D( 3, 3 );
-  vnl_matrix<vcl_complex<double> > vnl_sqrMatrix( 3, 3 );
+  vnl_matrix<std::complex<double> > D( 3, 3 );
+  vnl_matrix<std::complex<double> > vnl_sqrMatrix( 3, 3 );
   D.fill( 0.0 );
   for( int i = 0; i < 3; i++ )
     {
-    D.put( i, i, vcl_pow( eig.D.get( i, i ), 0.5 ) );
+    D.put( i, i, std::pow( eig.D.get( i, i ), 0.5 ) );
     }
-  vnl_sqrMatrix = eig.V * D * vnl_matrix_inverse<vcl_complex<double> >( eig.V );
+  vnl_sqrMatrix = eig.V * D * vnl_matrix_inverse<std::complex<double> >( eig.V );
   vnl_matrix<double> vnl_sqrMatrix_real( 3, 3 );
   vnl_sqrMatrix_real = vnl_real( vnl_sqrMatrix );
   for( int i = 0; i < 3; i++ )
