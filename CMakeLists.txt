@@ -47,7 +47,7 @@ SETIFEMPTY(INSTALL_RUNTIME_DESTINATION bin)
 find_package(ITK 5.3 REQUIRED)
 include(${ITK_USE_FILE})
 
-SET( ITKTransformTools_SRC
+set( ITKTransformTools_SRC
 AffineTransformCentered2NotCentered.h
 AffineTransformCentered2NotCentered.cpp
 CombineITKTransforms.h
@@ -83,6 +83,6 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 
 add_executable( ITKTransformTools ${ITKTransformTools_SRC} )
 
-TARGET_LINK_LIBRARIES( ITKTransformTools ${ITK_LIBRARIES} )
+target_link_libraries( ITKTransformTools ${ITK_LIBRARIES} )
 
 install(TARGETS ITKTransformTools RUNTIME DESTINATION ${INSTALL_RUNTIME_DESTINATION} )
