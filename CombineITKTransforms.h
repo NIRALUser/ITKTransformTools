@@ -2,6 +2,6 @@
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 #include <list>
-#include <string.h>
+#include <cstring>
 
 int CombineITKTransforms( int argc , char* argv[] );

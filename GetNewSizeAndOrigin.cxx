@@ -60,7 +60,7 @@ int ComputeSizeAndOrigin( itk::Image< unsigned char , 3 >::Pointer image ,
    ImageType::SizeType newSize ;
    for( int i = 0 ; i < 3 ; i++ )
    {
-     newSize[ i ] = (long)( vcl_floor( ( max[ i ] - min[ i ] ) / spacing[ i ] + 1.5 ) ) ;//+1 for size and +0.5 to transform floor into round
+     newSize[ i ] = (long)( itk::Math::floor( ( max[ i ] - min[ i ] ) / spacing[ i ] + 1.5 ) ) ;//+1 for size and +0.5 to transform floor into round
    }
    if( !gridName )
    {

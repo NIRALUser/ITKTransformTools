@@ -5,6 +5,6 @@
 #include <itkTransformFactory.h>
 #include <itkAffineTransform.h>
 #include <list>
-#include <string.h>
+#include <cstring>
 
 int MatrixOffsetToAffine( int argc , char* argv[] );
